@@ -7,6 +7,7 @@ export default function PopupWithForm({
   formName,
   children,
   isOpen,
+  onClose,
 }) {
   return (
     <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
@@ -14,6 +15,7 @@ export default function PopupWithForm({
         <div className='popup__body'>
           <button
             type='button'
+            onClick={onClose}
             className={`popup__close-btn popup__close-btn_type_${name}`}
             aria-label='Кнопка закрития модального окна'
           ></button>
