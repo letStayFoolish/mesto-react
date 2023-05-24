@@ -5,7 +5,6 @@
   background-size: 26px 26px;
   width: 26px;
   height: 26px;
-  opacity: 1;
   cursor: pointer;
   border: 0;
   padding: 0;
@@ -14,11 +13,9 @@
   top: 47px;
   right: 47px;
   transition: all 0.35s ease-in;
-  /* visibility: visible; */
   opacity: 0;
 }
 
 .profile__edit-avatar:hover {
-  /* visibility: visible; */
   opacity: 1;
 }
