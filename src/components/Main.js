@@ -1,6 +1,6 @@
 import React from 'react';
-import api from '../utils/api';
 import Card from './Card';
+import api from '../utils/api';
 
 export default function Main({
   onEditProfile,
@@ -10,9 +10,7 @@ export default function Main({
 }) {
   const [userName, setUserName] = React.useState('Чили');
   const [userDescription, setUserDescription] = React.useState('Путешественик');
-  const [userAvatar, setUserAvatar] = React.useState(
-    'https://images.unsplash.com/photo-1626548307930-deac221f87d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Z2lyYWZmZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=1600&q=60'
-  );
+  const [userAvatar, setUserAvatar] = React.useState();
   const [cards, setCards] = React.useState([]);
   const getUserInfoFromApi = api.getUserInformation();
   const getCardsFromApi = api.getInitialCards();

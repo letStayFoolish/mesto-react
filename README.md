@@ -3,12 +3,14 @@
 By _**Nemanja Karaklajic**_
 
 <hr>
+
 ### A simple interactive single-page service written on React.js
 
 <hr>
 <img src="./images/../src/images/Screen.png" width="500">
 <br>
 <hr>
+
 ## Technologies Used
 
 * _HTML 5 / JSX_
