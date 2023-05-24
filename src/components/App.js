@@ -2,7 +2,6 @@ import React from 'react';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import Card from './Card';
 import ImagePopup from './ImagePopup';
 import PopupWithForm from './PopupWithForm';
 
@@ -12,6 +11,7 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState(false);
 
   function handleEditProfilePopupOpen() {
     setIsEditProfilePopupOpenn(
@@ -31,13 +31,15 @@ function App() {
     setIsEditProfilePopupOpenn(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
+    setSelectedCard(false);
   }
 
   return (
-    <body className='page'>
+    <div className='page'>
       <div className='wrapper'>
         <Header />
         <Main
+          onCardClick={setSelectedCard}
           onEditProfile={handleEditProfilePopupOpen}
           onAddPlace={handleAddPlacePopupOpen}
           onEditAvatar={handleEditAvatarPopupOpen}
@@ -154,29 +156,9 @@ function App() {
           buttonText='Да'
           formName='cofirmation-form'
         />
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
       </div>
-      <template id='cardTemplate'>
-        <div className='card'>
-          <img alt='#' className='card__image' />
-          <button
-            type='button'
-            className='card__remove-btn card__remove-btn_active'
-            aria-label='Кнопка удаления карточки'
-          ></button>
-          <div className='card__info'>
-            <h2 className='card__title text'></h2>
-            <div className='card__likes'>
-              <button
-                type='button'
-                className='card__like-btn'
-                aria-label='Кнопка для добавления/удаления лайка'
-              ></button>
-              <div className='card__likes_count'>0</div>
-            </div>
-          </div>
-        </div>
-      </template>
-    </body>
+    </div>
   );
 }
 
