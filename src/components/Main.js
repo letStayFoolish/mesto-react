@@ -10,7 +10,7 @@ export default function Main({
 }) {
   const [userName, setUserName] = React.useState('Чили');
   const [userDescription, setUserDescription] = React.useState('Путешественик');
-  const [userAvatar, setUserAvatar] = React.useState();
+  const [userAvatar, setUserAvatar] = React.useState('');
   const [cards, setCards] = React.useState([]);
   const getUserInfoFromApi = api.getUserInformation();
   const getCardsFromApi = api.getInitialCards();

@@ -11,7 +11,7 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
-  const [selectedCard, setSelectedCard] = React.useState(false);
+  const [selectedCard, setSelectedCard] = React.useState(null);
 
   function handleEditProfilePopupOpen() {
     setIsEditProfilePopupOpenn(
@@ -31,7 +31,7 @@ function App() {
     setIsEditProfilePopupOpenn(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
-    setSelectedCard(false);
+    setSelectedCard(null);
   }
 
   return (
@@ -52,7 +52,9 @@ function App() {
           title='Редактировать профил'
           buttonText='Сохранить'
           formName='profile-form'
-          children={
+        >
+          children=
+          {
             <>
               <label className='form__field form__field_row_first'>
                 <input
@@ -86,7 +88,7 @@ function App() {
               </label>
             </>
           }
-        />
+        </PopupWithForm>
         <PopupWithForm
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
@@ -94,7 +96,9 @@ function App() {
           title='Новое место'
           buttonText='Сохранить'
           formName='place-form'
-          children={
+        >
+          children=
+          {
             <>
               <label className='form__field form__field_row_first'>
                 <input
@@ -126,7 +130,7 @@ function App() {
               </label>
             </>
           }
-        />
+        </PopupWithForm>
         <PopupWithForm
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
@@ -134,7 +138,9 @@ function App() {
           title='Обновить аватар'
           buttonText='Сохранить'
           formName='avatar-form'
-          children={
+        >
+          children=
+          {
             <label className='form__field form__field_row_second'>
               <input
                 name='popup-avatar-image-link'
@@ -149,7 +155,7 @@ function App() {
               </span>
             </label>
           }
-        />
+        </PopupWithForm>
         <PopupWithForm
           name='areyousure'
           title='Вы уверены?'
