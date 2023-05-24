@@ -1,9 +1,11 @@
 ## PLACE (Mesto)
+
 By _**Nemanja Karaklajic**_
 
 <hr>
 ### A simple interactive single-page service written on React.js
 
+<hr>
 <img src="./images/../src/images/Screen.png" width="500">
 <br>
 <hr>
@@ -38,4 +40,5 @@ Just clone or download. Once cloned or downloaded files, in your IDE type `npm s
 This project is licensed under the Yandex Practicum License.
 ````
 <hr>
+
 Copyright (c) _2023_ _Nemanja Karaklajic_
