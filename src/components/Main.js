@@ -38,7 +38,7 @@ export default function Main({
               aria-label='Кнопка редактирования изображения аватара.'
             ></button>
             <img
-              // style={{ backgroundImage: `url(${userAvatar})` }}
+              onClick={onEditAvatar}
               src={userAvatar}
               alt='Профильный аватар.'
               className='profile__avatar'
