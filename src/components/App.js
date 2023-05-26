@@ -6,29 +6,34 @@ import ImagePopup from './ImagePopup';
 import PopupWithForm from './PopupWithForm';
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpenn] =
+  // React Hooks - States
+  // State to help us with opening/closing popup for profile editing:
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
     React.useState(false);
+  // State to help us with opening/closing popup for adding new place:
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
+  // State to help us with opening/closing popup for change profile image:
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
+  // State to help us with open full-screen image on-click, depending what card is selected:
   const [selectedCard, setSelectedCard] = React.useState(null);
-
+  // Handler-function to toggle true/false on popup for profile editing, so it opens or closes:
   function handleEditProfilePopupOpen() {
-    setIsEditProfilePopupOpenn(
+    setIsEditProfilePopupOpen(
       (isEditProfilePopupOpen) => !isEditProfilePopupOpen
     );
   }
-
+  // Handler-function to toggle true/false on popup to add new place, so it opens or closes:
   function handleAddPlacePopupOpen() {
     setIsAddPlacePopupOpen((isAddPlacePopupOpen) => !isAddPlacePopupOpen);
   }
-
+  // Handler-function to toggle true/false on popup to change profile image, so it opens or closes:
   function handleEditAvatarPopupOpen() {
     setIsEditAvatarPopupOpen((isEditAvatarPopupOpen) => !isEditAvatarPopupOpen);
   }
-
+  // Function to close all popups on-click on close button
   function closeAllPopups() {
-    setIsEditProfilePopupOpenn(false);
+    setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setSelectedCard(null);

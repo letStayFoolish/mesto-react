@@ -1,4 +1,6 @@
 import React from 'react';
+// Creating global PopupWithForm components with all its props so every time we can create an unique popup by typing new: title, name, and so on...
+// We are using isOpen conditional operator so we can add or remove additional class name to the popup, so it becomes visible or hidden.
 export default function PopupWithForm({
   title,
   name,

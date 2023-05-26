@@ -1,5 +1,7 @@
 import React from 'react';
-
+// Creating Card component and all its props
+// properties card is an array (empty by default) with all needed information for every card that shall be rendered.
+// properties onCardClick is State setter (function) 'setSelectedCard' to fill in needed data for Card creation (name: card.name, and so on...)
 export default function Card({ card, onCardClick }) {
   function handleCardClick() {
     onCardClick({ name: card.name, alt: card.name, link: card.link });
