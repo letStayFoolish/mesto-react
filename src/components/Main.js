@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEfect, useContext } from 'react';
 import Card from './Card';
 import api from '../utils/api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+
 // Creating Main component and all its props
 // Main component includes sections: edit profile; add new place; change profile image (avatar).
 // Also in Main component we do request/response to API, about profile information and card information as well.
@@ -10,25 +12,18 @@ export default function Main({
   onEditAvatar,
   onCardClick,
 }) {
-  // States within Main component: firstly we set default values for username, user occupation & user avatar(as a default there should not be an image):
-  const [userName, setUserName] = React.useState('Чили');
-  const [userDescription, setUserDescription] = React.useState('Путешественик');
-  const [userAvatar, setUserAvatar] = React.useState('');
   // State to set default card array as an empty array:
-  const [cards, setCards] = React.useState([]);
+  const [cards, setCards] = useState([]);
   // Putting API's request/response into a constants:
-  const getUserInfoFromApi = api.getUserInformation();
   const getCardsFromApi = api.getInitialCards();
+  const userInformation = useContext(CurrentUserContext);
   // React Hook - state Effect, using this state, firstly we:
-  // 1. Fetching profile and card data as well, all at once,
-  // 2. Once we got response from API, we are setting profile information: username, user occupation, user avatar and card information (name, link, id, ...)
-  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh a page.
+  // 1. Fetching card data, all at once,
+  // 2. Once we got response from API, we are setting card information (name, link, id, ...)
+  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
   React.useEffect(() => {
-    Promise.all([getUserInfoFromApi, getCardsFromApi])
-      .then(([userInformation, cardsInformation]) => {
-        setUserName(userInformation.name);
-        setUserDescription(userInformation.about);
-        setUserAvatar(userInformation.avatar);
+    getCardsFromApi
+      .then((cardsInformation) => {
         setCards(cardsInformation);
       })
       .catch((error) => console.error(`Error while loading cards ${error}`));
@@ -47,14 +42,14 @@ export default function Main({
             />
             <img
               onClick={onEditAvatar}
-              src={userAvatar}
+              src={userInformation.avatar}
               alt='Профильный аватар.'
               className='profile__avatar'
             />
           </div>
           <div className='profile__user'>
             <div className='profile__edit'>
-              <h1 className='profile__user-name'>{userName}</h1>
+              <h1 className='profile__user-name'>{userInformation.name}</h1>
               <button
                 onClick={onEditProfile}
                 type='button'
@@ -62,7 +57,7 @@ export default function Main({
                 aria-label='Кнопка редактирования профиля'
               ></button>
             </div>
-            <p className='profile__user-occupation'>{userDescription}</p>
+            <p className='profile__user-occupation'>{userInformation.about}</p>
           </div>
         </div>
         <button
