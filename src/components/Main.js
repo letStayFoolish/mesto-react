@@ -1,6 +1,5 @@
-import React, { useState, useEfect, useContext } from 'react';
+import React, { useContext } from 'react';
 import Card from './Card';
-import api from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 // Creating Main component and all its props
@@ -11,23 +10,11 @@ export default function Main({
   onAddPlace,
   onEditAvatar,
   onCardClick,
+  onCardLike,
+  onCardDelete,
+  cards,
 }) {
-  // State to set default card array as an empty array:
-  const [cards, setCards] = useState([]);
-  // Putting API's request/response into a constants:
-  const getCardsFromApi = api.getInitialCards();
   const userInformation = useContext(CurrentUserContext);
-  // React Hook - state Effect, using this state, firstly we:
-  // 1. Fetching card data, all at once,
-  // 2. Once we got response from API, we are setting card information (name, link, id, ...)
-  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
-  React.useEffect(() => {
-    getCardsFromApi
-      .then((cardsInformation) => {
-        setCards(cardsInformation);
-      })
-      .catch((error) => console.error(`Error while loading cards ${error}`));
-  }, []);
   // JSX markup to be render on a page:
   return (
     <main className='main container'>
@@ -69,7 +56,15 @@ export default function Main({
       </section>
       <section className='places'>
         {cards.map((card) => {
-          return <Card card={card} key={card._id} onCardClick={onCardClick} />;
+          return (
+            <Card
+              card={card}
+              key={card._id}
+              onCardClick={onCardClick}
+              onCardLike={onCardLike}
+              onCardDelete={onCardDelete}
+            />
+          );
         })}
       </section>
     </main>

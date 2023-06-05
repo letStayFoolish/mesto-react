@@ -23,6 +23,53 @@ function App() {
     about: 'Outdoorist | Traveler | Student',
     avatar: '',
   });
+  // State to set default card array as an empty array:
+  const [cards, setCards] = useState([]);
+  // React Hook - state Effect, using this state, firstly we:
+  // 1. Fetching card data, all at once,
+  // 2. Once we got response from API, we are setting card information (name, link, id, ...)
+  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
+  useEffect(() => {
+    api
+      .getInitialCards()
+      .then((cardsInformation) => {
+        setCards(cardsInformation);
+      })
+      .catch((error) => console.error(`Error while loading cards ${error}`));
+  }, []);
+  // Function to add/remove card like, requesting and reciving respons from api:
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some((like) => like._id === currentUser._id);
+
+    isLiked
+      ? api
+          .removeLikes(card._id)
+          .then((res) => {
+            setCards((state) =>
+              state.map((c) => (c._id === card._id ? res : c))
+            );
+          })
+          .catch((err) => console.error(`Error on loading ${err}`))
+      : api
+          .addLikes(card._id)
+          .then((res) => {
+            setCards((newCardsList) =>
+              newCardsList.map((c) => (c._id === card._id ? res : c))
+            );
+          })
+          .catch((err) => console.error(`Error on loading ${err}`));
+  };
+  // Function to remove card, requesting and receiving response from api
+  const handleCardDelete = (card) => {
+    api
+      .removeCard(card._id)
+      .then(() => {
+        setCards((newCardsList) =>
+          newCardsList.filter((c) => c._id !== card._id)
+        );
+      })
+      .catch((error) => console.error(`Error while deleting cards ${error}`));
+  };
   // React Hook - state Effect, using this state we:
   // 1. Fetching user data, all at once (name, about & avatar),
   // 2. Once we got response from API, we are setting profile information (name, about, avatar
@@ -74,6 +121,9 @@ function App() {
             onEditProfile={handleEditProfilePopupOpen}
             onAddPlace={handleAddPlacePopupOpen}
             onEditAvatar={handleEditAvatarPopupOpen}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            cards={cards}
           />
           <Footer />
           <PopupWithForm

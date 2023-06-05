@@ -4,9 +4,15 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 // Creating Card component and all its props
 // properties card is an array (empty by default) with all needed information for every card that shall be rendered.
 // properties onCardClick is State setter (function) 'setSelectedCard' to fill in needed data for Card creation (name: card.name, and so on...)
-export default function Card({ card, onCardClick }) {
+export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   function handleCardClick() {
     onCardClick({ name: card.name, alt: card.name, link: card.link });
+  }
+  function handleLikeClick() {
+    onCardLike(card);
+  }
+  function handleDeleteClick() {
+    onCardDelete(card);
   }
   const currentUser = useContext(CurrentUserContext);
   const isOwn = card.owner._id === currentUser._id;
@@ -24,6 +30,7 @@ export default function Card({ card, onCardClick }) {
           type='button'
           className='card__remove-btn card__remove-btn_active'
           aria-label='Кнопка удаления карточки'
+          onClick={handleDeleteClick}
         ></button>
       )}
       <div className='card__info'>
@@ -31,6 +38,7 @@ export default function Card({ card, onCardClick }) {
         <div className='card__likes'>
           <button
             type='button'
+            onClick={handleLikeClick}
             className={`${
               isLiked
                 ? 'card__like-btn card__like-btn_active'
