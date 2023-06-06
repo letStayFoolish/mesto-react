@@ -5,6 +5,7 @@ import Footer from './Footer';
 import ImagePopup from './ImagePopup';
 import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
+import EditAvatarPopup from './EditAvatarPopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import api from '../utils/api';
 
@@ -125,7 +126,24 @@ function App() {
           }),
         closeAllPopups()
       )
-      .catch((err) => console.error(`Error ${err}`));
+      .catch((error) =>
+        console.error(`Error while getting data from server ${error}`)
+      );
+  }
+  // Function to update profile avatar
+  function handleUpdateAvatar({ avatar }) {
+    api
+      .changeAvatarImage({ avatar })
+      .then(
+        () =>
+          setcurrentUser((prevData) => {
+            return { ...prevData, avatar };
+          }),
+        closeAllPopups()
+      )
+      .catch((error) =>
+        console.error(`Error while getting data from server ${error}`)
+      );
   }
 
   return (
@@ -190,31 +208,11 @@ function App() {
               </>
             }
           </PopupWithForm>
-          <PopupWithForm
+          <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
-            name='avatar-image'
-            title='Обновить аватар'
-            buttonText='Сохранить'
-            formName='avatar-form'
-          >
-            children=
-            {
-              <label className='form__field form__field_row_second'>
-                <input
-                  name='popup-avatar-image-link'
-                  id='avatar-image-link'
-                  type='url'
-                  placeholder='Ссылка на картинку'
-                  className='popup__input popup__avatar-image-link form__input'
-                  required
-                />
-                <span className='popup__input-error popup__input-error_type_avatar-image-link'>
-                  Необходимо заполнить данное поле
-                </span>
-              </label>
-            }
-          </PopupWithForm>
+            onUpdateAvatar={handleUpdateAvatar}
+          />
           <PopupWithForm
             name='areyousure'
             title='Вы уверены?'

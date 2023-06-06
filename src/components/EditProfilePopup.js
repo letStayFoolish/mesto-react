@@ -11,7 +11,7 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser }) => {
     setName(currentUser.name);
     setDescription(currentUser.about);
   }, [currentUser]);
-
+  // Function to update user name and user description on submit
   function handleSubmit(e) {
     e.preventDefault();
 

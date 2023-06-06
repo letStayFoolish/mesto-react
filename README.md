@@ -7,7 +7,7 @@ By _**Nemanja Karaklajic**_
 ### A simple interactive single-page service written on React.js
 
 <hr>
-<img src="./images/../src/images/Screen.png" width="100%">
+<img src="./src/images/Screen.png" width="100%">
 <br>
 <hr>
 
