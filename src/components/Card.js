@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 // Creating Card component and all its props
@@ -14,9 +14,11 @@ export default function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   function handleDeleteClick() {
     onCardDelete(card);
   }
+
   const currentUser = useContext(CurrentUserContext);
   const isOwn = card.owner._id === currentUser._id;
   const isLiked = card.likes.some((like) => like._id === currentUser._id);
+
   return (
     <div className='card'>
       <img

@@ -1,4 +1,4 @@
-## PLACE (Mesto)
+## PLACE 
 
 By _**Nemanja Karaklajic**_
 

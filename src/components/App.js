@@ -3,9 +3,10 @@ import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
 import ImagePopup from './ImagePopup';
-import PopupWithForm from './PopupWithForm';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
+import AddPlacePopup from './AddPlacePopup';
+import ConfirmOnDelete from './ConfirmOnDelete';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import api from '../utils/api';
 
@@ -17,6 +18,8 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   // State to help us with opening/closing popup for change profile image:
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  // State to help us with opening/closing popup for change profile image:
+  const [isConfirmationPopupOpen, setIsConfirmationPopupOpen] = useState(false);
   // State to help us with open full-screen image on-click, depending what card is selected:
   const [selectedCard, setSelectedCard] = useState(null);
   // State to set default values for username, user occupation & user avatar(as a default there should not be an image):
@@ -27,7 +30,7 @@ function App() {
   });
   // State to set default card array as an empty array:
   const [cards, setCards] = useState([]);
-  // React Hook - state Effect, using this state, firstly we:
+  // React Hook - state Effect, using this state, we do:
   // 1. Fetching card data, all at once,
   // 2. Once we got response from API, we are setting card information (name, link, id, ...)
   // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
@@ -37,7 +40,9 @@ function App() {
       .then((cardsInformation) => {
         setCards(cardsInformation);
       })
-      .catch((error) => console.error(`Error while loading cards ${error}`));
+      .catch((error) =>
+        console.error(`Error while requesting to GET cards from API: ${error}`)
+      );
   }, []);
   // Function to add/remove card like, requesting and reciving respons from api:
   const handleCardLike = (card) => {
@@ -51,7 +56,11 @@ function App() {
               state.map((c) => (c._id === card._id ? res : c))
             );
           })
-          .catch((err) => console.error(`Error on loading ${err}`))
+          .catch((err) =>
+            console.error(
+              `Error while requesting to DELETE like on API: ${err}`
+            )
+          )
       : api
           .addLikes(card._id)
           .then((res) => {
@@ -59,20 +68,14 @@ function App() {
               newCardsList.map((c) => (c._id === card._id ? res : c))
             );
           })
-          .catch((err) => console.error(`Error on loading ${err}`));
+          .catch((err) =>
+            console.error(
+              `Error while requesting to PUT card like on API: ${err}`
+            )
+          );
   };
-  // Function to remove card, requesting and receiving response from api
-  const handleCardDelete = (card) => {
-    api
-      .removeCard(card._id)
-      .then(() => {
-        setCards((newCardsList) =>
-          newCardsList.filter((c) => c._id !== card._id)
-        );
-      })
-      .catch((error) => console.error(`Error while deleting cards ${error}`));
-  };
-  // React Hook - state Effect, using this state we:
+
+  // React Hook - state Effect, using this state we do:
   // 1. Fetching user data, all at once (name, about & avatar),
   // 2. Once we got response from API, we are setting profile information (name, about, avatar
   // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
@@ -88,7 +91,9 @@ function App() {
         })
       )
       .catch((error) =>
-        console.error(`Error while loading profile information ${error}`)
+        console.error(
+          `Error while requesting to GET profile information from API: ${error}`
+        )
       );
   }, []);
   // Handler-function to toggle true/false on popup for profile editing, so it opens or closes:
@@ -105,13 +110,36 @@ function App() {
   function handleEditAvatarPopupOpen() {
     setIsEditAvatarPopupOpen((isEditAvatarPopupOpen) => !isEditAvatarPopupOpen);
   }
+  // Handler-function to toggle true/false on popup to confirm while deleting card, so it opens or closes:
+  function handleConfirmationPopupOpen() {
+    setIsConfirmationPopupOpen(
+      (isConfirmationPopupOpen) => !isConfirmationPopupOpen
+    );
+  }
   // Function to close all popups on-click on close button
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setSelectedCard(null);
+    setIsConfirmationPopupOpen(false);
   }
+  // Function to remove card, requesting and receiving response from api
+  const handleCardDelete = (card) => {
+    api
+      .removeCard(card._id)
+      .then(() => {
+        setCards((newCardsList) =>
+          newCardsList.filter((c) => c._id !== card._id)
+        );
+        closeAllPopups();
+      })
+      .catch((error) =>
+        console.error(
+          `Error while requesting to DELETE card from API: ${error}`
+        )
+      );
+  };
   // Function to change profile name and description on submit
   function handleUpdateUser({ name, about }) {
     api
@@ -127,7 +155,9 @@ function App() {
         closeAllPopups()
       )
       .catch((error) =>
-        console.error(`Error while getting data from server ${error}`)
+        console.error(
+          `Error while requesting to PATCH new user info on API: ${error}`
+        )
       );
   }
   // Function to update profile avatar
@@ -142,7 +172,20 @@ function App() {
         closeAllPopups()
       )
       .catch((error) =>
-        console.error(`Error while getting data from server ${error}`)
+        console.error(
+          `Error while requesting to PATCH new user avatar on API: ${error}`
+        )
+      );
+  }
+  // Function to add new place on submit
+  function handleAddPlaceSubmit({ name, link }) {
+    api
+      .addNewCard({ name, link })
+      .then((newCard) => setCards([newCard, ...cards]), closeAllPopups())
+      .catch((error) =>
+        console.error(
+          `Error while requesting to PUT new card(place) on API: ${error}`
+        )
       );
   }
 
@@ -166,58 +209,20 @@ function App() {
             onClose={closeAllPopups}
             onUpdateUser={handleUpdateUser}
           />
-          <PopupWithForm
+          <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
-            name='item'
-            title='Новое место'
-            buttonText='Сохранить'
-            formName='place-form'
-          >
-            children=
-            {
-              <>
-                <label className='form__field form__field_row_first'>
-                  <input
-                    name='popup-image-name'
-                    id='image-name'
-                    type='text'
-                    placeholder='Название'
-                    className='popup__input popup__image-name form__input'
-                    minLength='2'
-                    maxLength='30'
-                    required
-                  />
-                  <span className='popup__input-error popup__input-error_type_image-name'>
-                    Необходимо заполнить данное поле
-                  </span>
-                </label>
-                <label className='form__field form__field_row_second'>
-                  <input
-                    name='popup-image-link'
-                    id='image-link'
-                    type='url'
-                    placeholder='Ссылка на картинку'
-                    className='popup__input popup__image-link form__input'
-                    required
-                  />
-                  <span className='popup__input-error popup__input-error_type_image-link'>
-                    Необходимо заполнить данное поле
-                  </span>
-                </label>
-              </>
-            }
-          </PopupWithForm>
+            onAddPlace={handleAddPlaceSubmit}
+          />
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
             onUpdateAvatar={handleUpdateAvatar}
           />
-          <PopupWithForm
-            name='areyousure'
-            title='Вы уверены?'
-            buttonText='Да'
-            formName='cofirmation-form'
+          <ConfirmOnDelete
+            isOpen={isConfirmationPopupOpen}
+            onClose={closeAllPopups}
+            // onCardDelete={handleCardDelete}
           />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         </div>
