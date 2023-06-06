@@ -1,6 +1,8 @@
 import React from 'react';
-// Creating global PopupWithForm components with all its props so every time we can create an unique popup by typing new: title, name, and so on...
-// We are using isOpen conditional operator so we can add or remove additional class name to the popup, so it becomes visible or hidden.
+// Creating global PopupWithForm component with all its props, so we can create an
+// unique popup by typing in a new: title, name, and so on...
+// We are using isOpen conditional operator so we can add or remove additional class name to the
+// popup, so it becomes visible or hidden.
 export default function PopupWithForm({
   title,
   name,
@@ -9,6 +11,7 @@ export default function PopupWithForm({
   children,
   isOpen,
   onClose,
+  onSubmit,
 }) {
   return (
     <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`}>
@@ -22,6 +25,7 @@ export default function PopupWithForm({
           ></button>
           <h2 className='popup__title'>{title}</h2>
           <form
+            onSubmit={onSubmit}
             action='#'
             name={`${formName}`}
             className={`popup__form popup__form_type_${name} form`}

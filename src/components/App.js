@@ -4,6 +4,7 @@ import Main from './Main';
 import Footer from './Footer';
 import ImagePopup from './ImagePopup';
 import PopupWithForm from './PopupWithForm';
+import EditProfilePopup from './EditProfilePopup';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import api from '../utils/api';
 
@@ -110,6 +111,22 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setSelectedCard(null);
   }
+  // Function to change profile name and description on submit
+  function handleUpdateUser({ name, about }) {
+    api
+      .sendProfileInformation({
+        name,
+        about,
+      })
+      .then(
+        () =>
+          setcurrentUser((prevData) => {
+            return { ...prevData, name, about };
+          }),
+        closeAllPopups()
+      )
+      .catch((err) => console.error(`Error ${err}`));
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -126,50 +143,11 @@ function App() {
             cards={cards}
           />
           <Footer />
-          <PopupWithForm
+          <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}
-            name='user'
-            title='Редактировать профил'
-            buttonText='Сохранить'
-            formName='profile-form'
-          >
-            children=
-            {
-              <>
-                <label className='form__field form__field_row_first'>
-                  <input
-                    name='popup-username'
-                    id='username'
-                    type='text'
-                    placeholder='name'
-                    className='popup__input popup__user-name form__input'
-                    minLength='2'
-                    maxLength='40'
-                    required
-                  />
-                  <span className='popup__input-error popup__input-error_type_username'>
-                    Необходимо заполнить данное поле
-                  </span>
-                </label>
-                <label className='form__field form__field_row_second'>
-                  <input
-                    name='popup-occupation'
-                    id='occupation'
-                    type='text'
-                    placeholder='occupation'
-                    className='popup__input popup__occupation form__input'
-                    minLength='2'
-                    maxLength='200'
-                    required
-                  />
-                  <span className='popup__input-error popup__input-error_type_occupation'>
-                    Необходимо заполнить данное поле
-                  </span>
-                </label>
-              </>
-            }
-          </PopupWithForm>
+            onUpdateUser={handleUpdateUser}
+          />
           <PopupWithForm
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
