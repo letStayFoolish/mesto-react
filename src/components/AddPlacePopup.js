@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
-import Child from './Child';
+import Input from './Input';
 
 const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
   const [name, setName] = useState('');
@@ -39,7 +39,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
       onSubmit={handleSubmit}
     >
       <>
-        <Child
+        <Input
           labelClassName='form__field form__field_row_first'
           value={name}
           onChange={handleSetName}
@@ -50,7 +50,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
           className='popup__input popup__image-name form__input'
           minLength='2'
         />
-        <Child
+        <Input
           labelClassName='form__field form__field_row_second'
           value={link}
           onChange={handleSetLink}

@@ -1,17 +1,20 @@
-import React, { forwardRef, createRef } from 'react';
 import PopupWithForm from './PopupWithForm';
-import Child from './Child';
+import InputWithAvatar from './InputWithAvatar';
+import { useRef, useEffect } from 'react';
 
 const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
-  const avatarRef = createRef('');
+  const ref = useRef(null);
   // Function to update user name and user description on submit
   function handleSubmit(e) {
     e.preventDefault();
 
     onUpdateAvatar({
-      avatar: avatarRef.current.value,
+      avatar: ref.current.value,
     });
   }
+  useEffect(() => {
+    ref.current.value = '';
+  }, [onUpdateAvatar]);
 
   return (
     <PopupWithForm
@@ -23,9 +26,9 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
       formName='avatar-form'
       onSubmit={handleSubmit}
     >
-      <Child
+      <InputWithAvatar
         labelClassName='form__field form__field_row_second'
-        ref={avatarRef}
+        ref={ref}
         name='popup-avatar-image-link'
         id='avatar-image-link'
         type='url'

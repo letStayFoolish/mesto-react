@@ -1,9 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
-import Child from './Child';
+import Input from './Input';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const EditProfilePopup = ({ isOpen, onClose, onUpdateUser, isLoading }) => {
+const EditProfilePopup = ({
+  isOpen,
+  onClose,
+  onUpdateUser,
+  isLoading,
+  handleKeyUp,
+}) => {
   const currentUser = useContext(CurrentUserContext);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -41,9 +47,10 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser, isLoading }) => {
       buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
       formName='profile-form'
       onSubmit={handleSubmit}
+      handleKeyUp={handleKeyUp}
     >
       <>
-        <Child
+        <Input
           labelClassName='form__field form__field_row_first'
           value={name}
           onChange={handleSetName}
@@ -55,7 +62,7 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser, isLoading }) => {
           minLength='2'
           maxLength='40'
         />
-        <Child
+        <Input
           labelClassName='form__field form__field_row_second'
           value={description}
           onChange={handleSetDescription}

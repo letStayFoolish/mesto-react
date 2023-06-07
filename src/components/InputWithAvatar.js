@@ -1,31 +1,17 @@
 import React from 'react';
+import { forwardRef } from 'react';
 
-const Child = ({
-  labelClassName,
-  value,
-  avatarRef,
-  onChange,
-  name,
-  id,
-  type,
-  placeholder,
-  className,
-  minLength,
-  maxLength,
-}) => {
+const InputWithAvatar = forwardRef(function InputWithAvatar(props, ref) {
+  const { labelClassName, name, id, type, placeholder, className } = props;
   return (
     <label className={labelClassName}>
       <input
-        value={value}
-        ref={avatarRef}
-        onChange={onChange}
+        ref={ref}
         name={name}
         id={id}
         type={type}
         placeholder={placeholder}
         className={className}
-        minLength={minLength}
-        maxLength={maxLength}
         required
       />
       {/* <span className='popup__input-error popup__input-error_type_image-name'> */}
@@ -34,6 +20,6 @@ const Child = ({
       </span>
     </label>
   );
-};
+});
 
-export default Child;
+export default InputWithAvatar;

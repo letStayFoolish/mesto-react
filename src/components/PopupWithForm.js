@@ -12,9 +12,13 @@ export default function PopupWithForm({
   isOpen,
   onClose,
   onSubmit,
+  handleKeyUp,
 }) {
   return (
-    <div className={`popup popup_type_${name} ${isOpen ? 'popup_opened' : ''}`}>
+    <div
+      onKeyUp={isOpen ? handleKeyUp : null}
+      className={`popup popup_type_${name} ${isOpen ? 'popup_opened' : ''}`}
+    >
       <div className='popup__container'>
         <div className='popup__body'>
           <button

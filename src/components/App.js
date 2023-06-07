@@ -30,13 +30,14 @@ function App() {
   });
   // State to set default card array as an empty array:
   const [cards, setCards] = useState([]);
-
+  const [removedCard, setRemovedCard] = useState(null);
   // React Hook - state Effect, using this state, firstly we do:
   // 1. Fetching profile and card data as well, all at once,
   // 2. Once we got response from API, we are setting profile information: username, user occupation, user avatar and card information (name, link, id, ...)
   // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh a page.
   const getUserInformation = api.getUserInformation();
   const getInitialCards = api.getInitialCards();
+
   useEffect(() => {
     Promise.all([getUserInformation, getInitialCards])
       .then(([userInformation, cardsInformation]) => {
@@ -54,6 +55,24 @@ function App() {
         )
       );
   }, []);
+
+  // Handler-function to toggle true/false on popup for profile editing, so it opens or closes:
+  function handleEditProfilePopupOpen() {
+    setIsEditProfilePopupOpen(true);
+  }
+  // Handler-function to toggle true/false on popup to add new place, so it opens or closes:
+  function handleAddPlacePopupOpen() {
+    setIsAddPlacePopupOpen(true);
+  }
+  // Handler-function to toggle true/false on popup to change profile image, so it opens or closes:
+  function handleEditAvatarPopupOpen() {
+    setIsEditAvatarPopupOpen(true);
+  }
+  // Handler-function to toggle true/false on popup to confirm while deleting card, so it opens or closes:
+  function handleConfirmationPopupOpen(card) {
+    setRemovedCard(card);
+    setIsConfirmationPopupOpen(true);
+  }
 
   // Function to add/remove card like, requesting and reciving respons from api:
   const handleCardLike = (card) => {
@@ -83,22 +102,6 @@ function App() {
     }
   };
 
-  // Handler-function to toggle true/false on popup for profile editing, so it opens or closes:
-  function handleEditProfilePopupOpen() {
-    setIsEditProfilePopupOpen(true);
-  }
-  // Handler-function to toggle true/false on popup to add new place, so it opens or closes:
-  function handleAddPlacePopupOpen() {
-    setIsAddPlacePopupOpen(true);
-  }
-  // Handler-function to toggle true/false on popup to change profile image, so it opens or closes:
-  function handleEditAvatarPopupOpen() {
-    setIsEditAvatarPopupOpen(true);
-  }
-  // Handler-function to toggle true/false on popup to confirm while deleting card, so it opens or closes:
-  function handleConfirmationPopupOpen() {
-    setIsConfirmationPopupOpen(true);
-  }
   // Function to close all popups on-click on close button
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
@@ -116,7 +119,7 @@ function App() {
         setCards((newCardsList) =>
           newCardsList.filter((c) => c._id !== card._id)
         );
-        // closeAllPopups();
+        closeAllPopups();
       })
       .catch((error) =>
         console.error(
@@ -180,6 +183,15 @@ function App() {
       )
       .finally(() => setIsLoading(false));
   }
+
+  // Handler to close popup on Escape
+  // function handleKeyUp(event) {
+  //   event.key === 'Escape' && closeAllPopups();
+  // }
+  function handleKeyUp(event) {
+    event.key === 'Escape' && console.log('CLOSE ON ESC');
+  }
+
   // Handler to show message while loading
   const [isLoading, setIsLoading] = useState(false);
 
@@ -194,13 +206,14 @@ function App() {
             onAddPlace={handleAddPlacePopupOpen}
             onEditAvatar={handleEditAvatarPopupOpen}
             onCardLike={handleCardLike}
-            onCardDelete={handleCardDelete}
+            onCardDelete={handleConfirmationPopupOpen}
             cards={cards}
           />
           <Footer />
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}
+            handleKeyUp={handleKeyUp}
             onUpdateUser={handleUpdateUser}
             isLoading={isLoading}
           />
@@ -209,10 +222,12 @@ function App() {
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
             isLoading={isLoading}
+            handleKeyUp={handleKeyUp}
           />
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
+            handleKeyUp={handleKeyUp}
             onUpdateAvatar={handleUpdateAvatar}
             isLoading={isLoading}
           />
@@ -220,7 +235,8 @@ function App() {
             isOpen={isConfirmationPopupOpen}
             onClose={closeAllPopups}
             isLoading={isLoading}
-            // onCardDelete={handleCardDelete}
+            card={removedCard}
+            onCardDelete={handleCardDelete}
           />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />
         </div>
