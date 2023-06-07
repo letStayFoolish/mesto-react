@@ -23,98 +23,81 @@ function App() {
   // State to help us with open full-screen image on-click, depending what card is selected:
   const [selectedCard, setSelectedCard] = useState(null);
   // State to set default values for username, user occupation & user avatar(as a default there should not be an image):
-  const [currentUser, setcurrentUser] = useState({
+  const [currentUser, setCurrentUser] = useState({
     name: 'Chili',
     about: 'Outdoorist | Traveler | Student',
     avatar: '',
   });
   // State to set default card array as an empty array:
   const [cards, setCards] = useState([]);
-  // React Hook - state Effect, using this state, we do:
-  // 1. Fetching card data, all at once,
-  // 2. Once we got response from API, we are setting card information (name, link, id, ...)
-  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
+
+  // React Hook - state Effect, using this state, firstly we do:
+  // 1. Fetching profile and card data as well, all at once,
+  // 2. Once we got response from API, we are setting profile information: username, user occupation, user avatar and card information (name, link, id, ...)
+  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh a page.
+  const getUserInformation = api.getUserInformation();
+  const getInitialCards = api.getInitialCards();
   useEffect(() => {
-    api
-      .getInitialCards()
-      .then((cardsInformation) => {
+    Promise.all([getUserInformation, getInitialCards])
+      .then(([userInformation, cardsInformation]) => {
+        setCurrentUser({
+          ...userInformation,
+          name: userInformation.name,
+          about: userInformation.about,
+          avatar: userInformation.avatar,
+        });
         setCards(cardsInformation);
       })
       .catch((error) =>
-        console.error(`Error while requesting to GET cards from API: ${error}`)
-      );
-  }, []);
-  // Function to add/remove card like, requesting and reciving respons from api:
-  const handleCardLike = (card) => {
-    const isLiked = card.likes.some((like) => like._id === currentUser._id);
-
-    isLiked
-      ? api
-          .removeLikes(card._id)
-          .then((res) => {
-            setCards((state) =>
-              state.map((c) => (c._id === card._id ? res : c))
-            );
-          })
-          .catch((err) =>
-            console.error(
-              `Error while requesting to DELETE like on API: ${err}`
-            )
-          )
-      : api
-          .addLikes(card._id)
-          .then((res) => {
-            setCards((newCardsList) =>
-              newCardsList.map((c) => (c._id === card._id ? res : c))
-            );
-          })
-          .catch((err) =>
-            console.error(
-              `Error while requesting to PUT card like on API: ${err}`
-            )
-          );
-  };
-
-  // React Hook - state Effect, using this state we do:
-  // 1. Fetching user data, all at once (name, about & avatar),
-  // 2. Once we got response from API, we are setting profile information (name, about, avatar
-  // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh the page.
-  useEffect(() => {
-    api
-      .getUserInformation()
-      .then((res) =>
-        setcurrentUser({
-          ...res,
-          name: res.name,
-          about: res.about,
-          avatar: res.avatar,
-        })
-      )
-      .catch((error) =>
         console.error(
-          `Error while requesting to GET profile information from API: ${error}`
+          `Error while requesting to GET profile and cards information from API: ${error}`
         )
       );
   }, []);
+
+  // Function to add/remove card like, requesting and reciving respons from api:
+  const handleCardLike = (card) => {
+    const isLiked = card.likes.some((like) => like._id === currentUser._id);
+    if (isLiked) {
+      api
+        .removeLikes(card._id)
+        .then((res) => {
+          setCards((state) => state.map((c) => (c._id === card._id ? res : c)));
+        })
+        .catch((err) =>
+          console.error(`Error while requesting to DELETE like on API: ${err}`)
+        );
+    } else {
+      api
+        .addLikes(card._id)
+        .then((res) => {
+          setCards((newCardsList) =>
+            newCardsList.map((c) => (c._id === card._id ? res : c))
+          );
+        })
+        .catch((err) =>
+          console.error(
+            `Error while requesting to PUT card like on API: ${err}`
+          )
+        );
+    }
+  };
+
   // Handler-function to toggle true/false on popup for profile editing, so it opens or closes:
   function handleEditProfilePopupOpen() {
-    setIsEditProfilePopupOpen(
-      (isEditProfilePopupOpen) => !isEditProfilePopupOpen
-    );
+    setIsEditProfilePopupOpen(true);
   }
   // Handler-function to toggle true/false on popup to add new place, so it opens or closes:
   function handleAddPlacePopupOpen() {
-    setIsAddPlacePopupOpen((isAddPlacePopupOpen) => !isAddPlacePopupOpen);
+    setIsAddPlacePopupOpen(true);
   }
   // Handler-function to toggle true/false on popup to change profile image, so it opens or closes:
   function handleEditAvatarPopupOpen() {
-    setIsEditAvatarPopupOpen((isEditAvatarPopupOpen) => !isEditAvatarPopupOpen);
+    setIsEditAvatarPopupOpen(true);
   }
   // Handler-function to toggle true/false on popup to confirm while deleting card, so it opens or closes:
   function handleConfirmationPopupOpen() {
-    setIsConfirmationPopupOpen(
-      (isConfirmationPopupOpen) => !isConfirmationPopupOpen
-    );
+    setIsConfirmationPopupOpen(true);
   }
   // Function to close all popups on-click on close button
   function closeAllPopups() {
@@ -126,68 +109,79 @@ function App() {
   }
   // Function to remove card, requesting and receiving response from api
   const handleCardDelete = (card) => {
+    setIsLoading(true);
     api
       .removeCard(card._id)
       .then(() => {
         setCards((newCardsList) =>
           newCardsList.filter((c) => c._id !== card._id)
         );
-        closeAllPopups();
+        // closeAllPopups();
       })
       .catch((error) =>
         console.error(
           `Error while requesting to DELETE card from API: ${error}`
         )
-      );
+      )
+      .finally(() => setIsLoading(false));
   };
   // Function to change profile name and description on submit
   function handleUpdateUser({ name, about }) {
+    setIsLoading(true);
     api
       .sendProfileInformation({
         name,
         about,
       })
-      .then(
-        () =>
-          setcurrentUser((prevData) => {
-            return { ...prevData, name, about };
-          }),
-        closeAllPopups()
-      )
+      .then(() => {
+        setCurrentUser((prevData) => {
+          return { ...prevData, name, about };
+        });
+        closeAllPopups();
+      })
       .catch((error) =>
         console.error(
           `Error while requesting to PATCH new user info on API: ${error}`
         )
-      );
+      )
+      .finally(() => setIsLoading(false));
   }
   // Function to update profile avatar
   function handleUpdateAvatar({ avatar }) {
+    setIsLoading(true);
     api
       .changeAvatarImage({ avatar })
-      .then(
-        () =>
-          setcurrentUser((prevData) => {
-            return { ...prevData, avatar };
-          }),
-        closeAllPopups()
-      )
+      .then(() => {
+        setCurrentUser((prevData) => {
+          return { ...prevData, avatar };
+        });
+        closeAllPopups();
+      })
       .catch((error) =>
         console.error(
           `Error while requesting to PATCH new user avatar on API: ${error}`
         )
-      );
+      )
+      .finally(() => setIsLoading(false));
   }
   // Function to add new place on submit
   function handleAddPlaceSubmit({ name, link }) {
+    setIsLoading(true);
     api
       .addNewCard({ name, link })
-      .then((newCard) => setCards([newCard, ...cards]), closeAllPopups())
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
       .catch((error) =>
         console.error(
           `Error while requesting to PUT new card(place) on API: ${error}`
         )
-      );
+      )
+      .finally(() => setIsLoading(false));
   }
+  // Handler to show message while loading
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -208,20 +202,24 @@ function App() {
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}
             onUpdateUser={handleUpdateUser}
+            isLoading={isLoading}
           />
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
+            isLoading={isLoading}
           />
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
             onUpdateAvatar={handleUpdateAvatar}
+            isLoading={isLoading}
           />
           <ConfirmOnDelete
             isOpen={isConfirmationPopupOpen}
             onClose={closeAllPopups}
+            isLoading={isLoading}
             // onCardDelete={handleCardDelete}
           />
           <ImagePopup card={selectedCard} onClose={closeAllPopups} />

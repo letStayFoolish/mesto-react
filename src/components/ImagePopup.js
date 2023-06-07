@@ -6,7 +6,7 @@ import React from 'react';
 // Also we are using onClose handler(closeAllPopups) as a props that we are passing from a App component. It is used to close full-screen mode and return to the default view.
 export default function ImagePopup({ card, onClose }) {
   return (
-    <div className={`popup popup_type_image ${card && 'popup_opened'}`}>
+    <div className={`popup popup_type_image ${card ? 'popup_opened' : ''}`}>
       <div className='popup__container'>
         <figure className='popup__image'>
           <button
@@ -16,12 +16,12 @@ export default function ImagePopup({ card, onClose }) {
             arialabel='Кнопка закрития модального окна'
           ></button>
           <img
-            alt={`${card && card.alt}`}
+            alt={card && card.alt}
             className='popup__img'
-            src={`${card && card.link}`}
+            src={card && card.link}
           />
           <figcaption className='popup__heading'>
-            {`${card && card.name}`}
+            {card && card.name}
           </figcaption>
         </figure>
       </div>

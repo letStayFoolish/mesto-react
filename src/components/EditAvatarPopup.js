@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
+import React, { forwardRef, createRef } from 'react';
 import PopupWithForm from './PopupWithForm';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import Child from './Child';
 
-const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar }) => {
-  let avatarRef = useRef('');
+const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
+  const avatarRef = createRef('');
   // Function to update user name and user description on submit
   function handleSubmit(e) {
     e.preventDefault();
@@ -19,27 +19,19 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar }) => {
       onClose={onClose}
       name='avatar-image'
       title='Обновить аватар'
-      buttonText='Сохранить'
+      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
       formName='avatar-form'
       onSubmit={handleSubmit}
     >
-      children=
-      {
-        <label className='form__field form__field_row_second'>
-          <input
-            ref={avatarRef}
-            name='popup-avatar-image-link'
-            id='avatar-image-link'
-            type='url'
-            placeholder='Ссылка на картинку'
-            className='popup__input popup__avatar-image-link form__input'
-            required
-          />
-          <span className='popup__input-error popup__input-error_type_avatar-image-link'>
-            Необходимо заполнить данное поле
-          </span>
-        </label>
-      }
+      <Child
+        labelClassName='form__field form__field_row_second'
+        ref={avatarRef}
+        name='popup-avatar-image-link'
+        id='avatar-image-link'
+        type='url'
+        placeholder='Ссылка на картинку'
+        className='popup__input popup__avatar-image-link form__input'
+      />
     </PopupWithForm>
   );
 };

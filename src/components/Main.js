@@ -15,6 +15,18 @@ export default function Main({
   cards,
 }) {
   const userInformation = useContext(CurrentUserContext);
+
+  const cardElements = cards.map((card) => {
+    return (
+      <Card
+        card={card}
+        key={card._id}
+        onCardClick={onCardClick}
+        onCardLike={onCardLike}
+        onCardDelete={onCardDelete}
+      />
+    );
+  });
   // JSX markup to be render on a page:
   return (
     <main className='main container'>
@@ -54,19 +66,7 @@ export default function Main({
           aria-label='Кнопка добавления карточки'
         ></button>
       </section>
-      <section className='places'>
-        {cards.map((card) => {
-          return (
-            <Card
-              card={card}
-              key={card._id}
-              onCardClick={onCardClick}
-              onCardLike={onCardLike}
-              onCardDelete={onCardDelete}
-            />
-          );
-        })}
-      </section>
+      <section className='places'>{cardElements}</section>
     </main>
   );
 }
