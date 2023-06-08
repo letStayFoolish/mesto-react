@@ -113,7 +113,7 @@ function App() {
   }
   // Function to remove card, requesting and receiving response from api
   const handleCardDelete = (card) => {
-    setButtonTextConfirmationPopup(true);
+    setIsSavingConfirmationPopup(true);
     api
       .removeCard(card._id)
       .then(() => {
@@ -127,11 +127,11 @@ function App() {
           `Error while requesting to DELETE card from API: ${error}`
         )
       )
-      .finally(() => setButtonTextConfirmationPopup(false));
+      .finally(() => setIsSavingConfirmationPopup(false));
   };
   // Function to change profile name and description on submit
   function handleUpdateUser({ name, about }) {
-    setButtonTextEditProfilePopup(true);
+    setIsSavingEditProfilePopup(true);
     api
       .sendProfileInformation({
         name,
@@ -148,11 +148,11 @@ function App() {
           `Error while requesting to PATCH new user info on API: ${error}`
         )
       )
-      .finally(() => setButtonTextEditProfilePopup(false));
+      .finally(() => setIsSavingEditProfilePopup(false));
   }
   // Function to update profile avatar
   function handleUpdateAvatar({ avatar }) {
-    setButtonTextEditAvatarPopup(true);
+    setIsSavingEditAvatarPopup(true);
     api
       .changeAvatarImage({ avatar })
       .then(() => {
@@ -166,11 +166,11 @@ function App() {
           `Error while requesting to PATCH new user avatar on API: ${error}`
         )
       )
-      .finally(() => setButtonTextEditAvatarPopup(false));
+      .finally(() => setIsSavingEditAvatarPopup(false));
   }
   // Function to add new place on submit
   function handleAddPlaceSubmit({ name, link }) {
-    setButtonTextAddPlacePopup(true);
+    setIsSavingAddPlacePopup(true);
     api
       .addNewCard({ name, link })
       .then((newCard) => {
@@ -182,19 +182,18 @@ function App() {
           `Error while requesting to PUT new card(place) on API: ${error}`
         )
       )
-      .finally(() => setButtonTextAddPlacePopup(false));
+      .finally(() => setIsSavingAddPlacePopup(false));
   }
 
   // Handler to change button text while saving user information
-  const [buttonTextEditProfilePopup, setButtonTextEditProfilePopup] =
+  const [isSavingEditProfilePopup, setIsSavingEditProfilePopup] =
     useState(false);
   // Handler to change button text while adding new card(place)
-  const [buttonTextAddPlacePopup, setButtonTextAddPlacePopup] = useState(false);
+  const [isSavingAddPlacePopup, setIsSavingAddPlacePopup] = useState(false);
   // Handler to change button text while saving user information
-  const [buttonTextEditAvatarPopup, setButtonTextEditAvatarPopup] =
-    useState(false);
+  const [isSavingEditAvatarPopup, setIsSavingEditAvatarPopup] = useState(false);
   // Handler to change button text while deleting card
-  const [buttonTextConfirmationPopup, setButtonTextConfirmationPopup] =
+  const [isSavingConfirmationPopup, setIsSavingConfirmationPopup] =
     useState(false);
 
   return (
@@ -216,24 +215,24 @@ function App() {
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}
             onUpdateUser={handleUpdateUser}
-            isSaving={buttonTextEditProfilePopup}
+            isSaving={isSavingEditProfilePopup}
           />
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
-            isSaving={buttonTextAddPlacePopup}
+            isSaving={isSavingAddPlacePopup}
           />
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
             onUpdateAvatar={handleUpdateAvatar}
-            isSaving={buttonTextEditAvatarPopup}
+            isSaving={isSavingEditAvatarPopup}
           />
           <ConfirmOnDelete
             isOpen={isConfirmationPopupOpen}
             onClose={closeAllPopups}
-            isDeleting={buttonTextConfirmationPopup}
+            isDeleting={isSavingConfirmationPopup}
             card={removedCard}
             onCardDelete={handleCardDelete}
           />

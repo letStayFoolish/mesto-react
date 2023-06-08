@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 
 const Popup = ({ isOpen, onClose, children }) => {
   // Function to close popup on Escape button
-  const escFunction = useCallback(
+  const handleCloseByEsc = useCallback(
     (event) => {
       if (isOpen) {
         if (event.key === 'Escape') {
@@ -13,12 +13,14 @@ const Popup = ({ isOpen, onClose, children }) => {
     [isOpen]
   );
   useEffect(() => {
-    document.addEventListener('keydown', escFunction);
+    if (isOpen) {
+      document.addEventListener('keydown', handleCloseByEsc);
+    }
 
     return () => {
-      document.removeEventListener('keydown', escFunction);
+      document.removeEventListener('keydown', handleCloseByEsc);
     };
-  }, [escFunction]);
+  }, [handleCloseByEsc, isOpen]);
   return [children];
 };
 
