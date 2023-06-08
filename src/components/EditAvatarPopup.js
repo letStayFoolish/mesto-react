@@ -1,8 +1,9 @@
 import PopupWithForm from './PopupWithForm';
-import InputWithAvatar from './InputWithAvatar';
+import InputWithRef from './InputWithRef';
 import { useRef, useEffect } from 'react';
+import Popup from './Popup';
 
-const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
+const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isSaving }) => {
   const ref = useRef(null);
   // Function to update user name and user description on submit
   function handleSubmit(e) {
@@ -14,28 +15,30 @@ const EditAvatarPopup = ({ isOpen, onClose, onUpdateAvatar, isLoading }) => {
   }
   useEffect(() => {
     ref.current.value = '';
-  }, [onUpdateAvatar]);
+  }, [isOpen]);
 
   return (
-    <PopupWithForm
-      isOpen={isOpen}
-      onClose={onClose}
-      name='avatar-image'
-      title='Обновить аватар'
-      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
-      formName='avatar-form'
-      onSubmit={handleSubmit}
-    >
-      <InputWithAvatar
-        labelClassName='form__field form__field_row_second'
-        ref={ref}
-        name='popup-avatar-image-link'
-        id='avatar-image-link'
-        type='url'
-        placeholder='Ссылка на картинку'
-        className='popup__input popup__avatar-image-link form__input'
-      />
-    </PopupWithForm>
+    <Popup isOpen={isOpen} onClose={onClose}>
+      <PopupWithForm
+        isOpen={isOpen}
+        onClose={onClose}
+        name='avatar-image'
+        title='Обновить аватар'
+        buttonText={isSaving ? 'Сохранение...' : 'Сохранить'}
+        formName='avatar-form'
+        onSubmit={handleSubmit}
+      >
+        <InputWithRef
+          labelClassName='form__field form__field_row_second'
+          ref={ref}
+          name='popup-avatar-image-link'
+          id='avatar-image-link'
+          type='url'
+          placeholder='Ссылка на картинку'
+          className='popup__input popup__avatar-image-link form__input'
+        />
+      </PopupWithForm>
+    </Popup>
   );
 };
 

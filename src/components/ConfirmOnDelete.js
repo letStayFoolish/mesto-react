@@ -1,12 +1,13 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm';
+import Popup from './Popup';
 
 const ConfirmOnDelete = ({
   isOpen,
   onClose,
   onCardDelete,
   card,
-  isLoading,
+  isDeleting,
 }) => {
   // Function to confirm deleting card on submit
   function handleSubmit(e) {
@@ -14,15 +15,17 @@ const ConfirmOnDelete = ({
     onCardDelete(card);
   }
   return (
-    <PopupWithForm
-      isOpen={isOpen}
-      onClose={onClose}
-      name='areyousure'
-      title='Вы уверены?'
-      buttonText={isLoading ? 'Удаляю...' : 'Да'}
-      formName='cofirmation-form'
-      onSubmit={handleSubmit}
-    />
+    <Popup isOpen={isOpen} onClose={onClose}>
+      <PopupWithForm
+        isOpen={isOpen}
+        onClose={onClose}
+        name='areyousure'
+        title='Вы уверены?'
+        buttonText={isDeleting ? 'Удаляю...' : 'Да'}
+        formName='cofirmation-form'
+        onSubmit={handleSubmit}
+      />
+    </Popup>
   );
 };
 

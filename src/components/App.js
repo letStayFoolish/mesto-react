@@ -35,11 +35,12 @@ function App() {
   // 1. Fetching profile and card data as well, all at once,
   // 2. Once we got response from API, we are setting profile information: username, user occupation, user avatar and card information (name, link, id, ...)
   // As a second argument of useEffect State, we set an empty array '[]', so this shall be called only once as we got in or refresh a page.
-  const getUserInformation = api.getUserInformation();
-  const getInitialCards = api.getInitialCards();
 
   useEffect(() => {
-    Promise.all([getUserInformation, getInitialCards])
+    const userInformationPromise = api.getUserInformation();
+    const initialCardsPromise = api.getInitialCards();
+
+    Promise.all([userInformationPromise, initialCardsPromise])
       .then(([userInformation, cardsInformation]) => {
         setCurrentUser({
           ...userInformation,
@@ -112,7 +113,7 @@ function App() {
   }
   // Function to remove card, requesting and receiving response from api
   const handleCardDelete = (card) => {
-    setIsLoading(true);
+    setButtonTextConfirmationPopup(true);
     api
       .removeCard(card._id)
       .then(() => {
@@ -126,11 +127,11 @@ function App() {
           `Error while requesting to DELETE card from API: ${error}`
         )
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setButtonTextConfirmationPopup(false));
   };
   // Function to change profile name and description on submit
   function handleUpdateUser({ name, about }) {
-    setIsLoading(true);
+    setButtonTextEditProfilePopup(true);
     api
       .sendProfileInformation({
         name,
@@ -147,11 +148,11 @@ function App() {
           `Error while requesting to PATCH new user info on API: ${error}`
         )
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setButtonTextEditProfilePopup(false));
   }
   // Function to update profile avatar
   function handleUpdateAvatar({ avatar }) {
-    setIsLoading(true);
+    setButtonTextEditAvatarPopup(true);
     api
       .changeAvatarImage({ avatar })
       .then(() => {
@@ -165,11 +166,11 @@ function App() {
           `Error while requesting to PATCH new user avatar on API: ${error}`
         )
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setButtonTextEditAvatarPopup(false));
   }
   // Function to add new place on submit
   function handleAddPlaceSubmit({ name, link }) {
-    setIsLoading(true);
+    setButtonTextAddPlacePopup(true);
     api
       .addNewCard({ name, link })
       .then((newCard) => {
@@ -181,19 +182,20 @@ function App() {
           `Error while requesting to PUT new card(place) on API: ${error}`
         )
       )
-      .finally(() => setIsLoading(false));
+      .finally(() => setButtonTextAddPlacePopup(false));
   }
 
-  // Handler to close popup on Escape
-  // function handleKeyUp(event) {
-  //   event.key === 'Escape' && closeAllPopups();
-  // }
-  function handleKeyUp(event) {
-    event.key === 'Escape' && console.log('CLOSE ON ESC');
-  }
-
-  // Handler to show message while loading
-  const [isLoading, setIsLoading] = useState(false);
+  // Handler to change button text while saving user information
+  const [buttonTextEditProfilePopup, setButtonTextEditProfilePopup] =
+    useState(false);
+  // Handler to change button text while adding new card(place)
+  const [buttonTextAddPlacePopup, setButtonTextAddPlacePopup] = useState(false);
+  // Handler to change button text while saving user information
+  const [buttonTextEditAvatarPopup, setButtonTextEditAvatarPopup] =
+    useState(false);
+  // Handler to change button text while deleting card
+  const [buttonTextConfirmationPopup, setButtonTextConfirmationPopup] =
+    useState(false);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -213,28 +215,25 @@ function App() {
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closeAllPopups}
-            handleKeyUp={handleKeyUp}
             onUpdateUser={handleUpdateUser}
-            isLoading={isLoading}
+            isSaving={buttonTextEditProfilePopup}
           />
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             onAddPlace={handleAddPlaceSubmit}
-            isLoading={isLoading}
-            handleKeyUp={handleKeyUp}
+            isSaving={buttonTextAddPlacePopup}
           />
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closeAllPopups}
-            handleKeyUp={handleKeyUp}
             onUpdateAvatar={handleUpdateAvatar}
-            isLoading={isLoading}
+            isSaving={buttonTextEditAvatarPopup}
           />
           <ConfirmOnDelete
             isOpen={isConfirmationPopupOpen}
             onClose={closeAllPopups}
-            isLoading={isLoading}
+            isDeleting={buttonTextConfirmationPopup}
             card={removedCard}
             onCardDelete={handleCardDelete}
           />

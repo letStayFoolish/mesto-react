@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PopupWithForm from './PopupWithForm';
 import Input from './Input';
+import Popup from './Popup';
 
-const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
+const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isSaving }) => {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
 
@@ -10,7 +11,7 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
   useEffect(() => {
     setName('');
     setLink('');
-  }, [onAddPlace]);
+  }, [isOpen]);
 
   // Handler action on submite
   function handleSubmit(e) {
@@ -29,16 +30,16 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
   };
 
   return (
-    <PopupWithForm
-      isOpen={isOpen}
-      onClose={onClose}
-      name='item'
-      title='Новое место'
-      buttonText={isLoading ? 'Сохранение...' : 'Сохранить'}
-      formName='place-form'
-      onSubmit={handleSubmit}
-    >
-      <>
+    <Popup isOpen={isOpen} onClose={onClose}>
+      <PopupWithForm
+        isOpen={isOpen}
+        onClose={onClose}
+        name='item'
+        title='Новое место'
+        buttonText={isSaving ? 'Сохранение...' : 'Сохранить'}
+        formName='place-form'
+        onSubmit={handleSubmit}
+      >
         <Input
           labelClassName='form__field form__field_row_first'
           value={name}
@@ -61,8 +62,8 @@ const AddPlacePopup = ({ isOpen, onClose, onAddPlace, isLoading }) => {
           className='popup__input popup__image-link form__input'
           minLength='2'
         />
-      </>
-    </PopupWithForm>
+      </PopupWithForm>
+    </Popup>
   );
 };
 

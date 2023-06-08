@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 // Creating global PopupWithForm component with all its props, so we can create an
 // unique popup by typing in a new: title, name, and so on...
 // We are using isOpen conditional operator so we can add or remove additional class name to the
@@ -12,11 +12,10 @@ export default function PopupWithForm({
   isOpen,
   onClose,
   onSubmit,
-  handleKeyUp,
 }) {
   return (
     <div
-      onKeyUp={isOpen ? handleKeyUp : null}
+      // onKeyDown={escFunction}
       className={`popup popup_type_${name} ${isOpen ? 'popup_opened' : ''}`}
     >
       <div className='popup__container'>
@@ -31,7 +30,7 @@ export default function PopupWithForm({
           <form
             onSubmit={onSubmit}
             action='#'
-            name={`${formName}`}
+            name={formName}
             className={`popup__form popup__form_type_${name} form`}
             noValidate
           >

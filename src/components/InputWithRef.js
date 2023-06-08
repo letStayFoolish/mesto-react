@@ -1,7 +1,7 @@
 import React from 'react';
 import { forwardRef } from 'react';
 
-const InputWithAvatar = forwardRef(function InputWithAvatar(props, ref) {
+const InputWithRef = forwardRef(function InputWithRef(props, ref) {
   const { labelClassName, name, id, type, placeholder, className } = props;
   return (
     <label className={labelClassName}>
@@ -22,4 +22,4 @@ const InputWithAvatar = forwardRef(function InputWithAvatar(props, ref) {
   );
 });
 
-export default InputWithAvatar;
+export default InputWithRef;
