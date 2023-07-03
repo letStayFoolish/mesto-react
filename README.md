@@ -30,8 +30,10 @@ _Here users are able to place and remove their pictures, as also as put likes on
 
 Just clone or download. Once cloned or downloaded files, in your IDE type `npm start`, and you are ready to go. Have fun!
 
-## This project is also hosted at
-- [GitHub](https://github.com/letStayFoolish/mesto-react)
+## Deploy
+Check out this website on:
+- [Vercel](hhttps://react-mesto-auth-8nd4.vercel.app/)
+
 ## Layout design:
 - [Figma](https://www.figma.com/file/PSdQFRHoxXJFs2FH8IXViF/JavaScript.-Sprint-9?node-id=0-1&t=yFci4NbLdIvZT794-0)
 
